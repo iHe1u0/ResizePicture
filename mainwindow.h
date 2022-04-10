@@ -1,6 +1,6 @@
 #pragma once
-#include "resize.h"
 #include "ui_mainwindow.h"
+#include "zoom.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -8,9 +8,6 @@ namespace Ui {
 class MainWindow;
 }
 QT_END_NAMESPACE
-
-constexpr int SCALE_MIN = 1;
-constexpr int SCALE_MAX = 5;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -21,11 +18,12 @@ public:
 
 private:
     Ui::MainWindow* ui;
-    Resize* resize;
+    ZoomUtils* zoomUtils;
     QString imagePath;
-    QGraphicsScene* scene;
+    double times;
     void updateImage(QString image_path);
 private slots:
     void openImage();
-    void enlarge();
+    void zoomIn();
+    void zoomOut();
 };
