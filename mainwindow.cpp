@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "error.h"
+#include "file.h"
 #include "ui_mainwindow.h"
 #include "zoom.h"
 #include <QFileDialog>
@@ -29,6 +30,9 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
+    if (!imagePath.isEmpty() && QFile::exists(imagePath)) {
+        QFile::remove(imagePath);
+    }
     delete zoomUtils;
     delete ui;
 }
@@ -36,17 +40,22 @@ MainWindow::~MainWindow()
 void MainWindow::openImage()
 {
     QString filePath = QFileDialog::getOpenFileName(this, "选择一张图片", "./", "图片(*.png *.jpeg *.jpg *.bmp *.webp)");
-    if (!filePath.isEmpty()) {
-        this->imagePath = filePath;
-        this->times = 1.00;
-        showImage(filePath);
-        zoomUtils = new ZoomUtils(this->imagePath);
+    if (filePath.isEmpty()) {
+        return;
     }
+    imagePath = File::generateTempSourceFile(filePath);
+    if (!QFile::exists(imagePath)) {
+        QMessageBox::information(this, "错误！", "图片读取失败");
+        return;
+    }
+    this->times = 1.00;
+    showImage(imagePath);
+    zoomUtils = new ZoomUtils(imagePath);
 }
 
 void MainWindow::zoomIn()
 {
-    if (this->imagePath.isEmpty()) {
+    if (imagePath.isEmpty()) {
         return;
     }
     if (times < zoomUtils->MAX_TIMES) {

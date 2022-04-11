@@ -4,7 +4,7 @@
 
 class File {
 public:
-    static bool isFileExist(QString file);
-    static bool isDirExist(QString file);
+    static QString generateTempSourceFile(QString sourceFilePath, QString tempFileName = "temp_src");
     static QString getTempDir(QString fileName = "temp");
+    static bool copyFileToPath(QString sourceFile, QString toFile, bool coverFileIfExist = true);
 };

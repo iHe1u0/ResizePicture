@@ -4,17 +4,49 @@
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
-bool File::isFileExist(QString file)
+QString File::generateTempSourceFile(QString sourceFilePath, QString tempFileName)
 {
-    return false;
-}
-
-bool File::isDirExist(QString file)
-{
-    return false;
+    if (sourceFilePath.isEmpty() || !QFile::exists(sourceFilePath)) {
+        return QString::number(ERROR_FILE_NOT_FOUND);
+    }
+    QFileInfo* fi = new QFileInfo(sourceFilePath);
+    QString sourceTempFileDir = getTempDir(tempFileName + "." + fi->suffix());
+    bool status = copyFileToPath(sourceFilePath, sourceTempFileDir, true);
+    delete fi;
+    if (status) {
+        return sourceTempFileDir;
+    }
+    return QString::number(ERROR_IO);
 }
 
 QString File::getTempDir(QString fileName)
 {
     return QDir::tempPath() + QDir::separator() + fileName;
+}
+
+bool File::copyFileToPath(QString sourceFile, QString toFile, bool coverFileIfExist)
+{
+    qDebug() << "sourceDir:" << sourceFile;
+    qDebug() << "toDir:" << toFile;
+    if (sourceFile.isEmpty() || toFile.isEmpty()) {
+        return false;
+    }
+    toFile.replace("\\", "/");
+    if (!QFile::exists(sourceFile)) {
+        return false;
+    }
+    if (sourceFile == toFile) {
+        return true;
+    }
+    if (QFile::exists(toFile)) {
+        if (coverFileIfExist) {
+            QFile::remove(toFile);
+        } else {
+            return false;
+        }
+    }
+    if (QFile::copy(sourceFile, toFile)) {
+        return true;
+    }
+    return false;
 }
