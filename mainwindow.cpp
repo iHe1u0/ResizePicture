@@ -79,13 +79,13 @@ void MainWindow::zoomOut()
         QMessageBox::information(this, "提示", "已经达到缩小极限");
     }
 }
-void MainWindow::showImage(QString image_path)
+void MainWindow::showImage(QString imagePath)
 {
-    if (image_path.isEmpty()) {
+    if (imagePath.isEmpty()) {
         return;
     }
     QGraphicsScene* scene = new QGraphicsScene;
-    scene->addPixmap(QPixmap(image_path));
+    scene->addPixmap(QPixmap(imagePath));
     ui->graphicsView->setScene(scene);
     ui->graphicsView->show();
 }
