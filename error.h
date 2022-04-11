@@ -8,3 +8,6 @@
 #define ERROR_FILE_NOT_FOUND -101
 #define ERROR_FILE_HAS_EXIST -102
 #define ERROR_OOM -103
+
+#define ERROR_ZOOM -200
+#define ERROR_ZERO_ZOOM -201

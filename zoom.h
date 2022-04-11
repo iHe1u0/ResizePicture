@@ -22,18 +22,18 @@ public:
     /**
      * @brief zoomIn 放大图片
      * @param times 放大倍数，默认为1，即原图，不放大
-     * @return 放大后的图片缓存路径
+     * @return 放大后的图片缓存路径或者是错误码
      */
     QString zoomIn(double times = 1.0);
 
     /**
      * @brief zoomOut 缩小图片
      * @param times 缩小倍数
-     * @return 缩小后的图片缓存路径
+     * @return 缩小后的图片缓存路径或者是错误码
      */
     QString zoomOut(double times = 1.0);
 
 private:
-    QFileInfo* file_info;
+    QFileInfo* fileInfo;
     QString tempFileName;
 };

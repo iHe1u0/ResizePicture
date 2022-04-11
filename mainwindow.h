@@ -18,12 +18,30 @@ public:
 
 private:
     Ui::MainWindow* ui;
+    // 缩放类
     ZoomUtils* zoomUtils;
+
+    //保存的图片路径
     QString imagePath;
+
+    // 缩放倍数
     double times;
-    void updateImage(QString image_path);
+
+    // 更新主界面显示的图片
+    void showImage(QString image_path);
 private slots:
+    /**
+     * @brief openImage 打开图片
+     */
     void openImage();
+
+    /**
+     * @brief zoomIn 放大图片
+     */
     void zoomIn();
+
+    /**
+     * @brief zoomOut 缩小图片
+     */
     void zoomOut();
 };

@@ -35,11 +35,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::openImage()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "选择一张图片", "./", "图片(*.png *.jpeg *.jpg *.bmp *.webp)");
+    QString filePath = QFileDialog::getOpenFileName(this, "选择一张图片", "E:\\testdata\\", "图片(*.png *.jpeg *.jpg *.bmp *.webp)");
     if (!filePath.isEmpty()) {
         this->imagePath = filePath;
         this->times = 1.00;
-        updateImage(filePath);
+        showImage(filePath);
         zoomUtils = new ZoomUtils(this->imagePath);
     }
 }
@@ -56,7 +56,7 @@ void MainWindow::zoomIn()
             QMessageBox::question(this, "错误", "操作错误，错误码：" + tempPath);
             return;
         }
-        this->updateImage(tempPath);
+        this->showImage(tempPath);
     } else {
         QMessageBox::information(this, "提示", "已经达到放大极限");
     }
@@ -67,19 +67,19 @@ void MainWindow::zoomOut()
     if (this->imagePath.isEmpty()) {
         return;
     }
-    if (times > zoomUtils->MIN_TIMES) {
-        times -= 0.05;
+    if (times > 0.5 && times > zoomUtils->MIN_TIMES) {
+        times -= 0.5;
         QString tempPath = zoomUtils->zoomIn(times);
         if (tempPath.startsWith("-")) {
             QMessageBox::question(this, "错误", "操作错误，错误码：" + tempPath);
             return;
         }
-        this->updateImage(tempPath);
+        this->showImage(tempPath);
     } else {
         QMessageBox::information(this, "提示", "已经达到缩小极限");
     }
 }
-void MainWindow::updateImage(QString image_path)
+void MainWindow::showImage(QString image_path)
 {
     if (image_path.isEmpty()) {
         return;
