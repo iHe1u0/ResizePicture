@@ -18,6 +18,7 @@ public:
 
 private:
     Ui::MainWindow* ui;
+
     // 缩放类
     ZoomUtils* zoomUtils;
 

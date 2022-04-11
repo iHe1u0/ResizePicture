@@ -35,7 +35,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::openImage()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "选择一张图片", "E:\\testdata\\", "图片(*.png *.jpeg *.jpg *.bmp *.webp)");
+    QString filePath = QFileDialog::getOpenFileName(this, "选择一张图片", "./", "图片(*.png *.jpeg *.jpg *.bmp *.webp)");
     if (!filePath.isEmpty()) {
         this->imagePath = filePath;
         this->times = 1.00;
@@ -53,7 +53,7 @@ void MainWindow::zoomIn()
         times += 0.5;
         QString tempPath = zoomUtils->zoomIn(times);
         if (tempPath.startsWith("-")) {
-            QMessageBox::question(this, "错误", "操作错误，错误码：" + tempPath);
+            QMessageBox::information(this, "错误", "操作错误，错误码：" + tempPath);
             return;
         }
         this->showImage(tempPath);
@@ -71,7 +71,7 @@ void MainWindow::zoomOut()
         times -= 0.5;
         QString tempPath = zoomUtils->zoomIn(times);
         if (tempPath.startsWith("-")) {
-            QMessageBox::question(this, "错误", "操作错误，错误码：" + tempPath);
+            QMessageBox::information(this, "错误", "操作错误，错误码：" + tempPath);
             return;
         }
         this->showImage(tempPath);
