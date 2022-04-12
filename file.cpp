@@ -1,10 +1,12 @@
 #include "file.h"
 #include "error.h"
 #include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
-QString File::generateTempSourceFile(QString sourceFilePath, QString tempFileName)
+QString File::generateTempSourceFile(const QString& sourceFilePath, const QString& tempFileName)
 {
     if (sourceFilePath.isEmpty() || !QFile::exists(sourceFilePath)) {
         return QString::number(ERROR_FILE_NOT_FOUND);
@@ -19,15 +21,13 @@ QString File::generateTempSourceFile(QString sourceFilePath, QString tempFileNam
     return QString::number(ERROR_IO);
 }
 
-QString File::getTempDir(QString fileName)
+QString File::getTempDir(const QString& fileName)
 {
     return QDir::tempPath() + QDir::separator() + fileName;
 }
 
-bool File::copyFileToPath(QString sourceFile, QString toFile, bool coverFileIfExist)
+bool File::copyFileToPath(const QString& sourceFile, QString& toFile, bool coverFileIfExist)
 {
-    qDebug() << "sourceDir:" << sourceFile;
-    qDebug() << "toDir:" << toFile;
     if (sourceFile.isEmpty() || toFile.isEmpty()) {
         return false;
     }
@@ -51,7 +51,13 @@ bool File::copyFileToPath(QString sourceFile, QString toFile, bool coverFileIfEx
     return false;
 }
 
-void File::saveImage(QWidget *obj, const QString &imagePath)
+void File::saveImage(QWidget* obj, const QString& imagePath)
 {
-
+    if (imagePath.isEmpty()) {
+        return;
+    }
+    QFileInfo* fileInfo = new QFileInfo(imagePath);
+    QString savePath = QFileDialog::getSaveFileName(obj, "保存", fileInfo->absoluteFilePath(), fileInfo->completeSuffix());
+    copyFileToPath(imagePath, savePath, true);
+    delete fileInfo;
 }

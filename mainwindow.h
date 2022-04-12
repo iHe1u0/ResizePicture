@@ -28,6 +28,12 @@ private:
     // 缩放倍数
     double times;
 
+    // 显示界面对象
+    QGraphicsScene* scene;
+
+    // 缩放后的文件路径
+    QString zoomImagePath;
+
     // 更新主界面显示的图片
     void showImage(QString image_path);
 private slots:

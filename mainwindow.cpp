@@ -3,7 +3,6 @@
 #include "file.h"
 #include "ui_mainwindow.h"
 #include "zoom.h"
-#include "file.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -22,10 +21,12 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(openImage()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
     connect(ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveImage()));
 
     ui->graphicsView->setCacheMode(QGraphicsView::CacheNone);
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
 
+    scene = new QGraphicsScene;
     zoomUtils = new ZoomUtils(this->imagePath);
 }
 
@@ -34,6 +35,7 @@ MainWindow::~MainWindow()
     if (!imagePath.isEmpty() && QFile::exists(imagePath)) {
         QFile::remove(imagePath);
     }
+    delete scene;
     delete zoomUtils;
     delete ui;
 }
@@ -78,7 +80,7 @@ void MainWindow::zoomOut()
         return;
     }
     if (times > 0.5 && times > zoomUtils->MIN_TIMES) {
-        times -= 0.5;
+        times -= 0.1;
         QString tempPath = zoomUtils->zoomIn(times);
         if (tempPath.startsWith("-")) {
             QMessageBox::information(this, "错误", "操作错误，错误码：" + tempPath);
@@ -92,15 +94,19 @@ void MainWindow::zoomOut()
 
 void MainWindow::saveImage()
 {
-    File::saveImage(this, this->imagePath);
+    File::saveImage(this, zoomImagePath);
 }
 void MainWindow::showImage(QString imagePath)
 {
     if (imagePath.isEmpty()) {
         return;
     }
-    QGraphicsScene* scene = new QGraphicsScene;
+    if (scene) {
+        delete scene;
+        scene = new QGraphicsScene;
+    }
     scene->addPixmap(QPixmap(imagePath));
     ui->graphicsView->setScene(scene);
     ui->graphicsView->show();
+    zoomImagePath = imagePath;
 }

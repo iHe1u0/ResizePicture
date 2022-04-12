@@ -16,7 +16,7 @@ public:
      * @brief ZoomUtils 利用原始图片路径构建类
      * @param src_path 源文件路径
      */
-    ZoomUtils(const QString src_path);
+    ZoomUtils(const QString& src_path);
     ~ZoomUtils();
 
     /**

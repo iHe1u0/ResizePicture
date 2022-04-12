@@ -10,7 +10,7 @@
 
 using namespace cv;
 
-ZoomUtils::ZoomUtils(const QString filePath)
+ZoomUtils::ZoomUtils(const QString& filePath)
 {
     if (filePath.isEmpty()) {
         return;
@@ -32,7 +32,7 @@ ZoomUtils::~ZoomUtils()
 
 QString ZoomUtils::zoomIn(double times)
 {
-    Mat image = imread(fileInfo->absoluteFilePath().toStdString()), tempImage;
+    Mat image = imread(fileInfo->absoluteFilePath().toStdString(), ImreadModes::IMREAD_UNCHANGED);
     if (image.empty()) {
         return QString::number(ERROR_FILE_NOT_FOUND);
     }
@@ -41,6 +41,7 @@ QString ZoomUtils::zoomIn(double times)
     // 原图像列数
     int width = image.cols;
     Size size = Size(round(times * width), round(times * height));
+    Mat tempImage;
     resize(image, tempImage, size, 0, 0, INTER_CUBIC);
     QString tempFilePath = File::getTempDir(this->tempFileName);
     imwrite(tempFilePath.toStdString(), tempImage);
@@ -52,11 +53,7 @@ QString ZoomUtils::zoomOut(double times)
     if (times <= 0) {
         return QString::number(ERROR_ZERO_ZOOM);
     }
-    QString imageFilePath = fileInfo->absoluteFilePath();
-    qDebug() << imageFilePath;
-    QTextCodec* codec = QTextCodec::codecForName("UTF-8");
-    qDebug() << codec->fromUnicode(imageFilePath);
-    Mat image = imread(imageFilePath.toStdString().c_str());
+    Mat image = imread(fileInfo->absoluteFilePath().toStdString());
     if (image.empty()) {
         return QString::number(ERROR_IO);
     }
