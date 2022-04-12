@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui opengl openglwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
@@ -9,6 +9,7 @@ QMAKE_CXXFLAGS += /MT
 
 SOURCES += \
     file.cpp \
+    imageview.cpp \
     main.cpp \
     mainwindow.cpp \
     zoom.cpp
@@ -16,6 +17,7 @@ SOURCES += \
 HEADERS += \
     error.h \
     file.h \
+    imageview.h \
     mainwindow.h \
     zoom.h
 

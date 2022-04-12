@@ -34,8 +34,23 @@ private:
     // 缩放后的文件路径
     QString zoomImagePath;
 
-    // 更新主界面显示的图片
-    void showImage(QString image_path);
+    /**
+     * @brief showImage 用指定路径的图片文件更新主界面显示
+     * @param imagePath 图片文件路径
+     */
+    void showImage(const QString& imagePath);
+
+    /**
+     * @brief showImage 用一个QImage对象更新主界面显示的图片
+     * @param image QImage对象
+     */
+    void showImage(const QImage& image);
+
+    /**
+     * @brief zoom 缩放
+     * @param times 缩放倍数，指缩放到原图的times倍
+     */
+    void zoom();
 private slots:
     /**
      * @brief openImage 打开图片

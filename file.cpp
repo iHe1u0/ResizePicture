@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QImageReader>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
@@ -12,7 +13,7 @@ QString File::generateTempSourceFile(const QString& sourceFilePath, const QStrin
         return QString::number(ERROR_FILE_NOT_FOUND);
     }
     QFileInfo* fi = new QFileInfo(sourceFilePath);
-    QString sourceTempFileDir = getTempDir(tempFileName + "." + fi->suffix());
+    QString sourceTempFileDir = getTempDir(tempFileName + "." + QImageReader::imageFormat(sourceFilePath));
     bool status = copyFileToPath(sourceFilePath, sourceTempFileDir, true);
     delete fi;
     if (status) {
@@ -57,7 +58,7 @@ void File::saveImage(QWidget* obj, const QString& imagePath)
         return;
     }
     QFileInfo* fileInfo = new QFileInfo(imagePath);
-    QString savePath = QFileDialog::getSaveFileName(obj, "保存", fileInfo->absoluteFilePath(), fileInfo->completeSuffix());
+    QString savePath = QFileDialog::getSaveFileName(obj, "保存", fileInfo->absoluteFilePath(), "*." + QImageReader::imageFormat(imagePath));
     copyFileToPath(imagePath, savePath, true);
     delete fileInfo;
 }
