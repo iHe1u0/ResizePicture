@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 
     MainWindow w;
     // 最大化显示
-    // w.showMaximized();
-    w.show();
+    w.showMaximized();
+    // w.show();
     return app.exec();
 }
