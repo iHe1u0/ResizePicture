@@ -45,4 +45,9 @@ private slots:
      * @brief zoomOut 缩小图片
      */
     void zoomOut();
+
+    /**
+     * @brief saveImage 保存图片
+     */
+    void saveImage();
 };

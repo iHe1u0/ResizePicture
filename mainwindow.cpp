@@ -3,6 +3,7 @@
 #include "file.h"
 #include "ui_mainwindow.h"
 #include "zoom.h"
+#include "file.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -87,6 +88,11 @@ void MainWindow::zoomOut()
     } else {
         QMessageBox::information(this, "提示", "已经达到缩小极限");
     }
+}
+
+void MainWindow::saveImage()
+{
+    File::saveImage(this, this->imagePath);
 }
 void MainWindow::showImage(QString imagePath)
 {

@@ -50,3 +50,8 @@ bool File::copyFileToPath(QString sourceFile, QString toFile, bool coverFileIfEx
     }
     return false;
 }
+
+void File::saveImage(QWidget *obj, const QString &imagePath)
+{
+
+}
