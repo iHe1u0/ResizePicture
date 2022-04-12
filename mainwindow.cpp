@@ -26,10 +26,10 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveImage()));
 
-    ui->screen->setCacheMode(QGraphicsView::CacheNone);
-    ui->screen->setDragMode(QGraphicsView::ScrollHandDrag);
+    //    ui->screen->setCacheMode(QGraphicsView::CacheNone);
+    //    ui->screen->setDragMode(QGraphicsView::ScrollHandDrag);
 
-    scene = new QGraphicsScene;
+    //    scene = new QGraphicsScene;
     zoomUtils = new ZoomUtils(this->imagePath);
 }
 
@@ -38,7 +38,7 @@ MainWindow::~MainWindow()
     if (!imagePath.isEmpty() && QFile::exists(imagePath)) {
         QFile::remove(imagePath);
     }
-    delete scene;
+    //    delete scene;
     delete zoomUtils;
     delete ui;
 }
@@ -72,34 +72,37 @@ void MainWindow::showImage(const QString& imagePath)
     if (imagePath.isEmpty()) {
         return;
     }
-    if (scene) {
-        delete scene;
-        scene = new QGraphicsScene;
-    }
+    //    if (scene) {
+    //        delete scene;
+    //        scene = new QGraphicsScene;
+    //    }
     zoomImagePath = imagePath;
 
-    scene->addPixmap(QPixmap(zoomImagePath));
-    ui->screen->setScene(scene);
-    ui->screen->show();
+    //    scene->addPixmap(QPixmap(zoomImagePath));
+    //    ui->screen->setScene(scene);
+    //    ui->screen->show();
+
     //    QImageReader reader(zoomImagePath);
     //    qDebug() << "Image Size:" << reader.size();
     //    reader.setScaledSize(QSize(600, 600));
     //    showImage(reader.read());
     //    qDebug() << "Show Size:" << reader.size();
-
-    ui->statusbar->showMessage("放大倍数:" + QString::number(times));
+    QImageReader reader(zoomImagePath);
+    showImage(reader.read());
+    // ui->statusbar->showMessage("放大倍数:" + QString::number(times));
 }
 
 void MainWindow::showImage(const QImage& image)
 {
-    QPixmap pixmap = QPixmap::fromImage(image);
-    if (scene) {
-        delete scene;
-        scene = new QGraphicsScene;
-    }
-    scene->addPixmap(QPixmap::fromImage(image));
-    ui->screen->setScene(scene);
-    ui->screen->show();
+    // QPixmap pixmap = QPixmap::fromImage(image);
+    ui->screen->setImage(image);
+    //    if (scene) {
+    //        delete scene;
+    //        scene = new QGraphicsScene;
+    //    }
+    //    scene->addPixmap(QPixmap::fromImage(image));
+    //    ui->screen->setScene(scene);
+    //    ui->screen->show();
 
     ui->statusbar->showMessage("放大倍数:" + QString::number(times));
 }

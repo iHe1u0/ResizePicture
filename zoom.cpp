@@ -37,7 +37,7 @@ QString ZoomUtils::zoom(const double& times) const
     }
     Mat image = imread(fileInfo->absoluteFilePath().toStdString(), ImreadModes::IMREAD_UNCHANGED);
     if (image.empty()) {
-        return QString::number(ERROR_FILE_NOT_FOUND);
+        return QString::number(ERROR_IMAGE_NOT_FOUND);
     }
     // 原图像行数
     int height = image.rows;

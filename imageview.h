@@ -5,6 +5,7 @@
 #include <QOpenGLTexture>
 #include <QOpenGLWidget>
 #include <QWidget>
+#include <gl/GL.h>
 
 class ImageView : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
@@ -25,27 +26,40 @@ public:
     ~ImageView();
 
     // 设置实时显示的数据源
-    void setImageData(uchar* imageSrc, uint width, uint height);
-    void setImageData(const QImage& img);
+    void setImage(uchar* imageSrc, uint width, uint height);
+    void setImage(const QImage& img);
 
 protected:
-    // 重写QGLWidget类的接口
 #if USE_OPENGL
-    void initializeGL() override;
-    void paintGL() override;
-    void resizeGL(int w, int h) override;
+    void initializeGL();
+    void paintGL();
+    void resizeGL(int w, int h);
+
 #else
     // 不需要时不能继承，否则会黑屏
     void paintEvent(QPaintEvent* e) override;
 #endif
 
 private:
-    uchar* imageData_; //纹理显示的数据源
-    QSize imageSize_; //图片尺寸
-    QSize Ortho2DSize_; //窗口尺寸
-    QOpenGLTexture* texture_;
-    GLuint textureId_; //纹理对象ID
-    int vertexPos_[Pos_Max]; //窗口坐标
-    float texturePos_[Pos_Max]; //纹理坐标
-    QImage m_img;
+    //纹理显示的数据源
+    uchar* imageSourceData;
+
+    //图片尺寸
+    QSize imageSize;
+
+    //窗口尺寸
+    QSize windowSize;
+
+    QOpenGLTexture* glTexture;
+
+    //纹理对象ID
+    GLuint glTextureID;
+
+    //窗口坐标
+    int vertexPos[Pos_Max];
+
+    //纹理坐标
+    float glTexturePos[Pos_Max];
+
+    QImage image;
 };

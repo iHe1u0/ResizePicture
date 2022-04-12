@@ -7,6 +7,8 @@ CONFIG += c++17
 
 QMAKE_CXXFLAGS += /MT
 
+DEFINES -= USE_OPENGL
+
 SOURCES += \
     file.cpp \
     imageview.cpp \

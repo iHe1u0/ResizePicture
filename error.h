@@ -5,8 +5,8 @@
 #pragma once
 
 #define ERROR_IO -100
-#define ERROR_FILE_NOT_FOUND -101
-#define ERROR_FILE_HAS_EXIST -102
+#define ERROR_IMAGE_NOT_FOUND -101
+#define ERROR_IMAGE_HAS_EXIST -102
 #define ERROR_OOM -103
 #define ERROR_WRONG_FILE_TYPE -104
 

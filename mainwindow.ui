@@ -22,7 +22,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QGraphicsView" name="screen">
+     <widget class="ImageView" name="screen">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -116,6 +116,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>imageview</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">imageview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

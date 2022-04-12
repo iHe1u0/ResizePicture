@@ -1,77 +1,79 @@
 #include "imageview.h"
-
 #include <QDebug>
 #include <QPainter>
 
 ImageView::ImageView(QWidget* parent)
     : QOpenGLWidget(parent)
 {
-    imageData_ = nullptr;
+    imageSourceData = nullptr;
     setAutoFillBackground(false);
 }
 
 ImageView::~ImageView()
 {
 #if USE_OPENGL
-    texture_->destroy();
+    glTexture->destroy();
 #endif
 }
 
 // 设置待显示的数据源
-void ImageView::setImageData(uchar* imageSrc, uint width, uint height)
+void ImageView::setImage(uchar* imageSrc, uint width, uint height)
 {
-    imageData_ = imageSrc;
-    imageSize_.setWidth(width);
-    imageSize_.setHeight(height);
+    imageSourceData = imageSrc;
+    imageSize.setWidth(width);
+    imageSize.setHeight(height);
     update();
 }
 
-void ImageView::setImageData(const QImage& img)
+void ImageView::setImage(const QImage& img)
 {
-    m_img = img;
-    imageData_ = (uchar*)m_img.bits();
-    imageSize_.setWidth(m_img.width());
-    imageSize_.setHeight(m_img.height());
+    image = img;
+    imageSourceData = (uchar*)image.bits();
+    //    imageSize.setWidth(image.width());
+    //    imageSize.setHeight(image.height());
     update();
 }
 #if USE_OPENGL
 void ImageView::initializeGL()
 {
     initializeOpenGLFunctions();
-    texture_ = new QOpenGLTexture(QOpenGLTexture::Target2D);
+    glTexture = new QOpenGLTexture(QOpenGLTexture::Target2D);
 
-    texture_->create();
-    textureId_ = texture_->textureId();
-    glBindTexture(GL_TEXTURE_2D, textureId_);
+    glTexture->create();
+    glTextureID = glTexture->textureId();
+    //    glBindTexture(GL_glTexture2D, glTextureID);
+    //    glTexParameteri(GL_glTexture2D, GL_glTextureMAG_FILTER, GL_LINEAR);
+    //    glTexParameteri(GL_glTexture2D, GL_glTextureMIN_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, glTextureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-// cpu:4% gpu:10%
 void ImageView::paintGL()
 {
     static bool initTextureFlag = false;
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (imageData_ == nullptr) {
+    if (imageSourceData == nullptr) {
         return;
     }
 
-    // QByteArray ba((const char*)imageData_,64);
-    // qDebug() <<imageData_ << ba;
-    glBindTexture(GL_TEXTURE_2D, textureId_);
-
+    // glBindTexture(GL_glTexture2D, glTextureID);
+    glBindTexture(GL_TEXTURE_2D, glTextureID);
     if (!initTextureFlag) {
         // 首次显示纹理
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageSize_.width(), imageSize_.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData_);
+        // glTexImage2D(GL_glTexture2D, 0, GL_RGBA, imageSize.width(), imageSize.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSourceData);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageSize.width(), imageSize.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSourceData);
+
         initTextureFlag = true;
     } else {
         // 动态修改纹理数据
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, imageSize_.width(), imageSize_.height(), GL_RGBA, GL_UNSIGNED_BYTE, imageData_);
-        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageSize_.width(), imageSize_.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData_);
+        // glTexSubImage2D(GL_glTexture2D, 0, 0, 0, imageSize.width(), imageSize.height(), GL_RGBA, GL_UNSIGNED_BYTE, imageSourceData);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, imageSize.width(), imageSize.height(), GL_RGBA, GL_UNSIGNED_BYTE, imageSourceData);
     }
 
+    // glEnable(GL_glTexture2D);
     glEnable(GL_TEXTURE_2D);
     glBegin(GL_POLYGON);
 
@@ -79,35 +81,34 @@ void ImageView::paintGL()
     glTexCoord2d(0.0f, 0.0f);
     glVertex2d(0, 0);
     glTexCoord2d(0.0f, 1.0f);
-    glVertex2d(0, Ortho2DSize_.height());
+    glVertex2d(0, windowSize.height());
     glTexCoord2d(1.0f, 1.0f);
-    glVertex2d(Ortho2DSize_.width(), Ortho2DSize_.height());
+    glVertex2d(windowSize.width(), windowSize.height());
     glTexCoord2d(1.0f, 0.0f);
-    glVertex2d(Ortho2DSize_.width(), 0);
+    glVertex2d(windowSize.width(), 0);
     glEnd();
+    // glDisable(GL_glTexture2D);
     glDisable(GL_TEXTURE_2D);
 }
 
 void ImageView::resizeGL(int w, int h)
 {
-    Ortho2DSize_.setWidth(w);
-    Ortho2DSize_.setHeight(h);
+    windowSize.setWidth(w);
+    windowSize.setHeight(h);
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, Ortho2DSize_.width(), Ortho2DSize_.height(), 0, -1, 1);
+    glOrtho(0, windowSize.width(), windowSize.height(), 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 }
 #else
 void ImageView::paintEvent(QPaintEvent* e)
 {
-#if !USE_WIDGET_PAINT_WITHOUT_OPENGL
-    QPainter p;
+    QPainter painter;
 
-    p.begin(this);
-    p.drawImage(rect(), m_img);
+    painter.begin(this);
+    painter.drawImage(rect(), image);
 
-    p.end();
-#endif
+    painter.end();
 }
 #endif

@@ -10,7 +10,7 @@
 QString File::generateTempSourceFile(const QString& sourceFilePath, const QString& tempFileName)
 {
     if (sourceFilePath.isEmpty() || !QFile::exists(sourceFilePath)) {
-        return QString::number(ERROR_FILE_NOT_FOUND);
+        return QString::number(ERROR_IMAGE_NOT_FOUND);
     }
     QFileInfo* fi = new QFileInfo(sourceFilePath);
     QString sourceTempFileDir = getTempDir(tempFileName + "." + QImageReader::imageFormat(sourceFilePath));
