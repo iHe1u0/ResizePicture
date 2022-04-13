@@ -52,27 +52,6 @@ QString ZoomUtils::zoom(const double& times) const
     return tempFilePath;
 }
 
-// QString ZoomUtils::zoomOut(const double& times) const
-// {
-//     if (times <= 0) {
-//         return QString::number(ERROR_ZERO_ZOOM);
-//     }
-//     Mat image = imread(fileInfo->absoluteFilePath().toStdString());
-//     if (image.empty()) {
-//         return QString::number(ERROR_IO);
-//     }
-//     // 原图像行数
-//     int height = image.rows;
-//     // 原图像列数
-//     int width = image.cols;
-//     Size size = Size(round(times * width), round(times * height));
-//     Mat* tempImage = new Mat;
-//     resize(image, *tempImage, size, 0, 0, INTER_AREA);
-//     QString tempFilePath = File::getTempDir(this->tempFileName);
-//     imwrite(tempFilePath.toStdString(), *tempImage);
-//     return tempFilePath;
-// }
-
 QImage ZoomUtils::mat2QImage(const Mat& mat) const
 {
     // 8-bits unsigned, NO. OF CHANNELS = 1
@@ -100,7 +79,6 @@ QImage ZoomUtils::mat2QImage(const Mat& mat) const
         QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
         return image.rgbSwapped();
     } else if (mat.type() == CV_8UC4) {
-        qDebug() << "CV_8UC4";
         // Copy input Mat
         const uchar* pSrc = (const uchar*)mat.data;
         // Create QImage with same dimensions as input Mat

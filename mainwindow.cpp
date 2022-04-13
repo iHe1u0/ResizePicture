@@ -18,8 +18,6 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
     this->setWindowTitle("OpenCV图片缩放");
-    //    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
-    //    setFixedSize(this->width(), this->height());
 
     connect(ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(openImage()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
@@ -45,7 +43,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::openImage()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "选择一张图片", "./", "图片(*.png *.jpeg *.jpg *.bmp *.webp *.tiff)");
+    QString filePath = QFileDialog::getOpenFileName(this, "选择一张图片", "./", "图片(*.png;*.jpeg;*.jpg;*.bmp;*.webp;*.tiff);;所有文件(*.*)");
     if (filePath.isEmpty()) {
         return;
     }
@@ -81,11 +79,6 @@ void MainWindow::showImage(const QString& imagePath)
     scene->addPixmap(QPixmap(zoomImagePath));
     ui->screen->setScene(scene);
     ui->screen->show();
-    //    QImageReader reader(zoomImagePath);
-    //    qDebug() << "Image Size:" << reader.size();
-    //    reader.setScaledSize(QSize(600, 600));
-    //    showImage(reader.read());
-    //    qDebug() << "Show Size:" << reader.size();
 
     ui->statusbar->showMessage("放大倍数:" + QString::number(times));
 }
@@ -106,7 +99,7 @@ void MainWindow::showImage(const QImage& image)
 
 void MainWindow::zoomIn()
 {
-    times += 5;
+    times += 0.5;
     zoom();
 }
 
