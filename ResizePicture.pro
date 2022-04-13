@@ -9,7 +9,6 @@ QMAKE_CXXFLAGS += /MT
 
 SOURCES += \
     file.cpp \
-    imageview.cpp \
     main.cpp \
     mainwindow.cpp \
     zoom.cpp
@@ -17,7 +16,6 @@ SOURCES += \
 HEADERS += \
     error.h \
     file.h \
-    imageview.h \
     mainwindow.h \
     zoom.h
 
