@@ -1,65 +1,45 @@
 #pragma once
 
-#include <QObject>
-#include <QOpenGLFunctions>
-#include <QOpenGLTexture>
+#include <QOpenGLFunctions_2_0>
 #include <QOpenGLWidget>
-#include <QWidget>
-#include <gl/GL.h>
+#include <mutex>
+#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 
-class ImageView : public QOpenGLWidget, protected QOpenGLFunctions {
+class ImageView : public QOpenGLWidget, protected QOpenGLFunctions_2_0 {
     Q_OBJECT
 public:
-    enum {
-        Left_Bottom_X,
-        Left_Bottom_Y,
-        Right_Bottom_X,
-        Right_Bottom_Y,
-        Right_Top_X,
-        Right_Top_Y,
-        Left_Top_X,
-        Left_Top_Y,
-        Pos_Max
-    };
+    explicit ImageView(QWidget* parent = 0);
 
-    ImageView(QWidget* parent = nullptr);
-    ~ImageView();
+signals:
+    void imageSizeChanged(int outW, int outH); /// Used to resize the image outside the widget
 
-    // 设置实时显示的数据源
-    void setImage(uchar* imageSrc, uint width, uint height);
-    void setImage(const QImage& img);
+public slots:
+    bool showImage(const cv::Mat& image); /// Used to set the image to be viewed
 
 protected:
-#if USE_OPENGL
-    void initializeGL();
-    void paintGL();
-    void resizeGL(int w, int h);
+    void initializeGL(); /// OpenGL initialization
+    void paintGL(); /// OpenGL Rendering
+    void resizeGL(int width, int height); /// Widget Resize Event
 
-#else
-    // 不需要时不能继承，否则会黑屏
-    void paintEvent(QPaintEvent* e) override;
-#endif
+    void updateScene();
+    void renderImage();
 
 private:
-    //纹理显示的数据源
-    uchar* imageSourceData;
+    QImage mRenderQtImg; /// Qt image to be rendered
+    QImage mResizedImg;
+    cv::Mat mOrigImage; /// original OpenCV image to be shown
 
-    //图片尺寸
-    QSize imageSize;
+    QColor mBgColor; /// Background color
 
-    //窗口尺寸
-    QSize windowSize;
+    float mImgRatio; /// height/width ratio
 
-    QOpenGLTexture* glTexture;
+    int mRenderWidth;
+    int mRenderHeight;
+    int mRenderPosX;
+    int mRenderPosY;
 
-    //纹理对象ID
-    GLuint glTextureID;
+    void recalculatePosition();
 
-    //窗口坐标
-    int vertexPos[Pos_Max];
-
-    //纹理坐标
-    float glTexturePos[Pos_Max];
-
-    QImage image;
+    std::mutex drawMutex;
 };

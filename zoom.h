@@ -11,7 +11,7 @@ using namespace cv;
 class ZoomUtils {
 public:
     // 定义放大倍数的极限值
-    static constexpr double MAX_TIMES = 100.0;
+    static constexpr double MAX_TIMES = 10.0;
     static constexpr double MIN_TIMES = 0.1;
 
     /**

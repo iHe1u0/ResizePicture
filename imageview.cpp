@@ -1,114 +1,133 @@
 #include "imageview.h"
-#include <QDebug>
-#include <QPainter>
+#include <opencv2/imgproc/types_c.h>
 
 ImageView::ImageView(QWidget* parent)
     : QOpenGLWidget(parent)
 {
-    imageSourceData = nullptr;
-    setAutoFillBackground(false);
+    mBgColor = QColor::fromRgbF(0xff, 0xff, 0xff);
 }
 
-ImageView::~ImageView()
-{
-#if USE_OPENGL
-    glTexture->destroy();
-#endif
-}
-
-// 设置待显示的数据源
-void ImageView::setImage(uchar* imageSrc, uint width, uint height)
-{
-    imageSourceData = imageSrc;
-    imageSize.setWidth(width);
-    imageSize.setHeight(height);
-    update();
-}
-
-void ImageView::setImage(const QImage& img)
-{
-    image = img;
-    imageSourceData = (uchar*)image.bits();
-    //    imageSize.setWidth(image.width());
-    //    imageSize.setHeight(image.height());
-    update();
-}
-#if USE_OPENGL
 void ImageView::initializeGL()
 {
+    makeCurrent();
     initializeOpenGLFunctions();
-    glTexture = new QOpenGLTexture(QOpenGLTexture::Target2D);
 
-    glTexture->create();
-    glTextureID = glTexture->textureId();
-    //    glBindTexture(GL_glTexture2D, glTextureID);
-    //    glTexParameteri(GL_glTexture2D, GL_glTextureMAG_FILTER, GL_LINEAR);
-    //    glTexParameteri(GL_glTexture2D, GL_glTextureMIN_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, glTextureID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    float r = ((float)mBgColor.darker().red()) / 255.0f;
+    float g = ((float)mBgColor.darker().green()) / 255.0f;
+    float b = ((float)mBgColor.darker().blue()) / 255.0f;
+    glClearColor(r, g, b, 1.0f);
+}
+
+void ImageView::resizeGL(int width, int height)
+{
+    makeCurrent();
+    glViewport(0, 0, (GLint)width, (GLint)height);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(0, width, -height, 0, 0, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+
+    recalculatePosition();
+
+    emit imageSizeChanged(mRenderWidth, mRenderHeight);
+
+    updateScene();
+}
+
+void ImageView::updateScene()
+{
+    if (this->isVisible())
+        update();
 }
 
 void ImageView::paintGL()
 {
-    static bool initTextureFlag = false;
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    makeCurrent();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (imageSourceData == nullptr) {
-        return;
+    renderImage();
+}
+
+void ImageView::renderImage()
+{
+
+    drawMutex.lock();
+    makeCurrent();
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    if (!mRenderQtImg.isNull()) {
+        glLoadIdentity();
+
+        glPushMatrix();
+        {
+            if (mResizedImg.width() <= 0) {
+                if (mRenderWidth == mRenderQtImg.width() && mRenderHeight == mRenderQtImg.height())
+                    mResizedImg = mRenderQtImg;
+                else
+                    mResizedImg = mRenderQtImg.scaled(QSize(mRenderWidth, mRenderHeight),
+                        Qt::IgnoreAspectRatio,
+                        Qt::SmoothTransformation);
+            }
+
+            // ---> Centering image in draw area
+
+            glRasterPos2i(mRenderPosX, mRenderPosY);
+
+            glPixelZoom(1, -1);
+
+            glDrawPixels(mResizedImg.width(), mResizedImg.height(), GL_RGBA, GL_UNSIGNED_BYTE, mResizedImg.bits());
+        }
+        glPopMatrix();
+
+        // end
+        glFlush();
     }
 
-    // glBindTexture(GL_glTexture2D, glTextureID);
-    glBindTexture(GL_TEXTURE_2D, glTextureID);
-    if (!initTextureFlag) {
-        // 首次显示纹理
-        // glTexImage2D(GL_glTexture2D, 0, GL_RGBA, imageSize.width(), imageSize.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSourceData);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageSize.width(), imageSize.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSourceData);
+    drawMutex.unlock();
+}
 
-        initTextureFlag = true;
-    } else {
-        // 动态修改纹理数据
-        // glTexSubImage2D(GL_glTexture2D, 0, 0, 0, imageSize.width(), imageSize.height(), GL_RGBA, GL_UNSIGNED_BYTE, imageSourceData);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, imageSize.width(), imageSize.height(), GL_RGBA, GL_UNSIGNED_BYTE, imageSourceData);
+void ImageView::recalculatePosition()
+{
+    mImgRatio = (float)mOrigImage.cols / (float)mOrigImage.rows;
+
+    mRenderWidth = this->size().width();
+    mRenderHeight = floor(mRenderWidth / mImgRatio);
+
+    if (mRenderHeight > this->size().height()) {
+        mRenderHeight = this->size().height();
+        mRenderWidth = floor(mRenderHeight * mImgRatio);
     }
 
-    // glEnable(GL_glTexture2D);
-    glEnable(GL_TEXTURE_2D);
-    glBegin(GL_POLYGON);
+    mRenderPosX = floor((this->size().width() - mRenderWidth) / 2);
+    mRenderPosY = -floor((this->size().height() - mRenderHeight) / 2);
 
-    //顶点坐标和纹理坐标必须一一对应
-    glTexCoord2d(0.0f, 0.0f);
-    glVertex2d(0, 0);
-    glTexCoord2d(0.0f, 1.0f);
-    glVertex2d(0, windowSize.height());
-    glTexCoord2d(1.0f, 1.0f);
-    glVertex2d(windowSize.width(), windowSize.height());
-    glTexCoord2d(1.0f, 0.0f);
-    glVertex2d(windowSize.width(), 0);
-    glEnd();
-    // glDisable(GL_glTexture2D);
-    glDisable(GL_TEXTURE_2D);
+    mResizedImg = QImage();
 }
 
-void ImageView::resizeGL(int w, int h)
+bool ImageView::showImage(const cv::Mat& image)
 {
-    windowSize.setWidth(w);
-    windowSize.setHeight(h);
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, windowSize.width(), windowSize.height(), 0, -1, 1);
-    glMatrixMode(GL_MODELVIEW);
-}
-#else
-void ImageView::paintEvent(QPaintEvent* e)
-{
-    QPainter painter;
+    drawMutex.lock();
+    if (image.channels() == 3)
+        cvtColor(image, mOrigImage, CV_BGR2RGBA);
+    else if (image.channels() == 1)
+        cvtColor(image, mOrigImage, CV_GRAY2RGBA);
+    else if (image.channels() == 4)
+        mOrigImage = image;
+    else
+        return false;
 
-    painter.begin(this);
-    painter.drawImage(rect(), image);
+    mRenderQtImg = QImage((const unsigned char*)(mOrigImage.data),
+        mOrigImage.cols, mOrigImage.rows,
+        mOrigImage.step1(), QImage::Format_RGB32);
 
-    painter.end();
+    recalculatePosition();
+
+    updateScene();
+    drawMutex.unlock();
+    return true;
 }
-#endif

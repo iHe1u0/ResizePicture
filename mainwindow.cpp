@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "error.h"
 #include "file.h"
+#include "mat2qimage.h"
 #include "ui_mainwindow.h"
 #include "zoom.h"
 #include <QApplication>
@@ -18,18 +19,16 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
     this->setWindowTitle("OpenCV图片缩放");
-    //    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
-    //    setFixedSize(this->width(), this->height());
 
     connect(ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(openImage()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
     connect(ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveImage()));
 
-    //    ui->screen->setCacheMode(QGraphicsView::CacheNone);
-    //    ui->screen->setDragMode(QGraphicsView::ScrollHandDrag);
+    // ui->screen->setCacheMode(QGraphicsView::CacheNone);
+    // ui->screen->setDragMode(QGraphicsView::ScrollHandDrag);
 
-    //    scene = new QGraphicsScene;
+    // scene = new QGraphicsScene;
     zoomUtils = new ZoomUtils(this->imagePath);
 }
 
@@ -38,7 +37,7 @@ MainWindow::~MainWindow()
     if (!imagePath.isEmpty() && QFile::exists(imagePath)) {
         QFile::remove(imagePath);
     }
-    //    delete scene;
+    // delete scene;
     delete zoomUtils;
     delete ui;
 }
@@ -77,7 +76,6 @@ void MainWindow::showImage(const QString& imagePath)
     //        scene = new QGraphicsScene;
     //    }
     zoomImagePath = imagePath;
-
     //    scene->addPixmap(QPixmap(zoomImagePath));
     //    ui->screen->setScene(scene);
     //    ui->screen->show();
@@ -87,15 +85,17 @@ void MainWindow::showImage(const QString& imagePath)
     //    reader.setScaledSize(QSize(600, 600));
     //    showImage(reader.read());
     //    qDebug() << "Show Size:" << reader.size();
-    QImageReader reader(zoomImagePath);
-    showImage(reader.read());
-    // ui->statusbar->showMessage("放大倍数:" + QString::number(times));
+
+    ui->screen->showImage(cv::imread(zoomImagePath.toStdString()));
+    //    QImageReader reader(zoomImagePath);
+    //    showImage(reader.read());
+    ui->statusbar->showMessage("缩放倍数:" + QString::number(times));
 }
 
 void MainWindow::showImage(const QImage& image)
 {
     // QPixmap pixmap = QPixmap::fromImage(image);
-    ui->screen->setImage(image);
+    //    ui->screen->showImage();
     //    if (scene) {
     //        delete scene;
     //        scene = new QGraphicsScene;
@@ -104,12 +104,12 @@ void MainWindow::showImage(const QImage& image)
     //    ui->screen->setScene(scene);
     //    ui->screen->show();
 
-    ui->statusbar->showMessage("放大倍数:" + QString::number(times));
+    ui->statusbar->showMessage("缩放倍数:" + QString::number(times));
 }
 
 void MainWindow::zoomIn()
 {
-    times += 5;
+    times += 0.5;
     zoom();
 }
 
@@ -129,7 +129,6 @@ void MainWindow::zoom()
         QMessageBox::information(this, "提示", "已经达到缩放极限");
         return;
     }
-    qDebug() << "zoom:" << times;
     QString tempPath = zoomUtils->zoom(times);
     if (tempPath.startsWith("-")) {
         QMessageBox::information(this, "错误", "操作错误，错误码：" + tempPath);
