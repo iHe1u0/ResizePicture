@@ -49,6 +49,8 @@
     <addaction name="actionOpenFile"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
+    <addaction name="actionGetImageInfo"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
@@ -113,6 +115,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionGetImageInfo">
+   <property name="text">
+    <string>图片信息</string>
    </property>
   </action>
  </widget>

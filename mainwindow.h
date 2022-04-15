@@ -1,6 +1,6 @@
 #pragma once
+#include "imageutils.h"
 #include "ui_mainwindow.h"
-#include "zoom.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -20,10 +20,13 @@ private:
     Ui::MainWindow* ui;
 
     // 缩放类
-    ZoomUtils* zoomUtils;
+    ImageUtils* imageUtils;
 
-    //保存的图片路径
-    QString imagePath;
+    // 原图路径
+    QString sourceImagePath;
+
+    // 临时缓存图片路径
+    QString tempImagePath;
 
     // 缩放倍数
     double times;
@@ -71,4 +74,9 @@ private slots:
      * @brief saveImage 保存图片
      */
     void saveImage();
+
+    /**
+     * @brief getImageInfo 显示图片信息
+     */
+    void getImageInfo() const;
 };

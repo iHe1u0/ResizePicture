@@ -9,17 +9,20 @@ QMAKE_CXXFLAGS += /MT
 
 SOURCES += \
     file.cpp \
+    imageinfodialog.cpp \
+    imageutils.cpp \
     main.cpp \
-    mainwindow.cpp \
-    zoom.cpp
+    mainwindow.cpp
 
 HEADERS += \
     error.h \
     file.h \
-    mainwindow.h \
-    zoom.h
+    imageinfodialog.h \
+    imageutils.h \
+    mainwindow.h
 
 FORMS += \
+    imageinfodialog.ui \
     mainwindow.ui
 
 LIBS += -L$$PWD/libs/ -lopencv_img_hash455

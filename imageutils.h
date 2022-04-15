@@ -5,21 +5,21 @@
 
 using namespace cv;
 /**
- * @brief The ZoomUtils class
+ * @brief The ImageUtils class
  * 实现对图片的缩放
  */
-class ZoomUtils {
+class ImageUtils {
 public:
     // 定义放大倍数的极限值
     static constexpr double MAX_TIMES = 100.0;
     static constexpr double MIN_TIMES = 0.1;
 
     /**
-     * @brief ZoomUtils 利用原始图片路径构建类
+     * @brief ImageUtils 利用原始图片路径构建类
      * @param src_path 源文件路径
      */
-    ZoomUtils(const QString& src_path);
-    ~ZoomUtils();
+    ImageUtils(const QString& src_path);
+    ~ImageUtils();
 
     /**
      * @brief zoom 缩放图片

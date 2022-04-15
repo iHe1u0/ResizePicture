@@ -1,4 +1,4 @@
-#include "zoom.h"
+#include "imageutils.h"
 #include "error.h"
 #include "file.h"
 #include <QFileInfo>
@@ -10,7 +10,7 @@
 
 using namespace cv;
 
-ZoomUtils::ZoomUtils(const QString& filePath)
+ImageUtils::ImageUtils(const QString& filePath)
 {
     if (filePath.isEmpty()) {
         return;
@@ -23,14 +23,14 @@ ZoomUtils::ZoomUtils(const QString& filePath)
     }
 }
 
-ZoomUtils::~ZoomUtils()
+ImageUtils::~ImageUtils()
 {
     if (this->fileInfo) {
         delete this->fileInfo;
     }
 }
 
-QString ZoomUtils::zoom(const double& times) const
+QString ImageUtils::zoom(const double& times) const
 {
     if (times <= 0) {
         return QString::number(ERROR_ZERO_ZOOM);
@@ -52,7 +52,7 @@ QString ZoomUtils::zoom(const double& times) const
     return tempFilePath;
 }
 
-QImage ZoomUtils::mat2QImage(const Mat& mat) const
+QImage ImageUtils::mat2QImage(const Mat& mat) const
 {
     // 8-bits unsigned, NO. OF CHANNELS = 1
     if (mat.type() == CV_8UC1) {
