@@ -15,7 +15,7 @@ ImageInfoDialog::ImageInfoDialog(const QString& imagePath, QWidget* parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->image_info_dialog_filename->setText(info->fileName());
-    ui->image_info_dialog_size->setText(QString::number(info->size() / 1024.0).append(" KB"));
+    ui->image_info_dialog_size->setText(QString("%1 KB").arg(info->size() / 1024.0));
     ui->image_info_dialog_type->setText(info->suffix());
     ui->image_info_dialog_filepath->setText(info->absoluteFilePath());
 }

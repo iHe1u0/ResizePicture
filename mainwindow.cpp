@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "aboutdialog.h"
 #include "error.h"
 #include "file.h"
 #include "imageinfodialog.h"
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveImage()));
     connect(ui->actionGetImageInfo, SIGNAL(triggered()), this, SLOT(getImageInfo()));
+    connect(ui->actionShowAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
 
     ui->screen->setCacheMode(QGraphicsView::CacheNone);
     ui->screen->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -74,7 +76,13 @@ void MainWindow::getImageInfo() const
         return;
     }
     ImageInfoDialog* dialog = new ImageInfoDialog(this->sourceImagePath);
-    dialog->show();
+    dialog->exec();
+}
+
+void MainWindow::showAbout() const
+{
+    AboutDialog* a = new AboutDialog;
+    a->exec();
 }
 
 void MainWindow::showImage(const QString& imagePath)

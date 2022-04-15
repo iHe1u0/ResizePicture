@@ -79,4 +79,6 @@ private slots:
      * @brief getImageInfo 显示图片信息
      */
     void getImageInfo() const;
+
+    void showAbout() const;
 };

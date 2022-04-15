@@ -53,14 +53,27 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuAbout">
+   <widget class="QMenu" name="menuZoom">
     <property name="title">
      <string>缩放</string>
     </property>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
    </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>图片处理</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>关于</string>
+    </property>
+    <addaction name="actionShowAbout"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuZoom"/>
+   <addaction name="menu"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -120,6 +133,11 @@
   <action name="actionGetImageInfo">
    <property name="text">
     <string>图片信息</string>
+   </property>
+  </action>
+  <action name="actionShowAbout">
+   <property name="text">
+    <string>版权</string>
    </property>
   </action>
  </widget>

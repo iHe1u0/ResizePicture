@@ -1,5 +1,4 @@
-#ifndef IMAGEINFODIALOG_H
-#define IMAGEINFODIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QFileInfo>
@@ -19,5 +18,3 @@ private:
     Ui::ImageInfoDialog* ui;
     QFileInfo* info;
 };
-
-#endif // IMAGEINFODIALOG_H
