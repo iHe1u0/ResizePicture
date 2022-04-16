@@ -2,13 +2,23 @@
 #include "error.h"
 #include "file.h"
 #include <QFileInfo>
+#include <QImageReader>
 #include <QMessageBox>
 #include <QObject>
 #include <QTextCodec>
 #include <exception>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
+
+QString ImageUtils::getImageType(const QString& imagePath)
+{
+    if (imagePath.isEmpty() || !QFile::exists(imagePath)) {
+        return "jpeg";
+    }
+    return QImageReader::imageFormat(imagePath);
+}
 
 ImageUtils::ImageUtils(const QString& filePath)
 {
@@ -88,4 +98,30 @@ QImage ImageUtils::mat2QImage(const Mat& mat) const
         qDebug() << "ERROR: Mat could not be converted to QImage.";
         return QImage();
     }
+}
+
+QString ImageUtils::cannyCheck(const QString& imagePath) const
+{
+    if (imagePath.isEmpty()) {
+        return QString::number(ERROR_FILE_NOT_FOUND);
+    }
+    QString tempImagePath = File::getTempDir("canny").append(".").append(getImageType(imagePath));
+    Mat image = imread(imagePath.toStdString());
+    Mat cannyImage(image.size(), CV_8UC1, Scalar());
+    Canny(image, cannyImage, 100, 100, 3, false);
+    imwrite(tempImagePath.toStdString(), cannyImage);
+    return tempImagePath;
+}
+
+QString ImageUtils::generateGrayImage(const QString& imagePath) const
+{
+    if (imagePath.isEmpty()) {
+        return QString::number(ERROR_FILE_NOT_FOUND);
+    }
+    QString tempImagePath = File::getTempDir("grayImage").append(".").append(getImageType(imagePath));
+    Mat image = imread(imagePath.toStdString());
+    Mat grayImage;
+    cvtColor(image, grayImage, cv::COLOR_RGBA2GRAY);
+    cv::imwrite(tempImagePath.toStdString(), grayImage);
+    return tempImagePath;
 }

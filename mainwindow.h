@@ -20,7 +20,7 @@ private:
     Ui::MainWindow* ui;
 
     // 缩放类
-    ImageUtils* imageUtils;
+    ImageUtils* imageUtils = nullptr;
 
     // 原图路径
     QString sourceImagePath;
@@ -37,6 +37,8 @@ private:
     // 缩放后的文件路径
     QString zoomImagePath;
 
+    // 图片操作菜单组
+    QActionGroup* imageOperationMenu;
     /**
      * @brief showImage 用指定路径的图片文件更新主界面显示
      * @param imagePath 图片文件路径
@@ -54,6 +56,11 @@ private:
      * @param times 缩放倍数，指缩放到原图的times倍
      */
     void zoom();
+
+    /**
+     * @brief updateStatusBar 更新状态栏
+     */
+    void updateStatusBar() const;
 private slots:
     /**
      * @brief openImage 打开图片
@@ -79,6 +86,23 @@ private slots:
      * @brief getImageInfo 显示图片信息
      */
     void getImageInfo() const;
+
+    /**
+     * @brief reset 重置为原图
+     */
+    void reset(bool isChecked);
+
+    /**
+     * @brief cannyCheck canny边缘检测
+     * @param isChecked true为开启边缘检测
+     */
+    void cannyCheck(bool isChecked);
+
+    /**
+     * @brief grayImage 灰度图
+     * @param isChecked true为显示
+     */
+    void grayImage(bool isChecked);
 
     void showAbout() const;
 };

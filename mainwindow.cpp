@@ -6,6 +6,7 @@
 #include "imageutils.h"
 #include "ui_imageinfodialog.h"
 #include "ui_mainwindow.h"
+#include <QActionGroup>
 #include <QApplication>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -27,13 +28,22 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveImage()));
     connect(ui->actionGetImageInfo, SIGNAL(triggered()), this, SLOT(getImageInfo()));
+    connect(ui->actionResetImage, SIGNAL(triggered(bool)), this, SLOT(reset(bool)));
+    connect(ui->actionCanny, SIGNAL(triggered(bool)), this, SLOT(cannyCheck(bool)));
+    connect(ui->actionGrayImage, SIGNAL(triggered(bool)), this, SLOT(grayImage(bool)));
     connect(ui->actionShowAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
-
     ui->screen->setCacheMode(QGraphicsView::CacheNone);
     ui->screen->setDragMode(QGraphicsView::ScrollHandDrag);
 
     scene = new QGraphicsScene;
-    imageUtils = new ImageUtils(this->tempImagePath);
+
+    // 图片处理只在原图或者是缩放的图片上单一操作
+    imageOperationMenu = new QActionGroup(this);
+    imageOperationMenu->addAction(ui->actionResetImage);
+    imageOperationMenu->addAction(ui->actionCanny);
+    imageOperationMenu->addAction(ui->actionGrayImage);
+
+    imageOperationMenu->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -41,66 +51,98 @@ MainWindow::~MainWindow()
     if (!tempImagePath.isEmpty() && QFile::exists(tempImagePath)) {
         QFile::remove(tempImagePath);
     }
+    if (imageUtils) {
+        delete imageUtils;
+    }
+    delete imageOperationMenu;
     delete scene;
-    delete imageUtils;
     delete ui;
 }
 
 void MainWindow::openImage()
 {
-    sourceImagePath = QFileDialog::getOpenFileName(this, "选择一张图片", "./", "图片(*.png;*.jpeg;*.jpg;*.bmp;*.webp;*.tiff);;所有文件(*.*)");
+    this->sourceImagePath = QFileDialog::getOpenFileName(this, "选择一张图片", "./", "图片(*.png;*.jpeg;*.jpg;*.bmp;*.webp;*.tiff);;所有文件(*.*)");
     if (sourceImagePath.isEmpty()) {
         return;
     }
-    this->setWindowTitle(sourceImagePath);
-
+    setWindowTitle(sourceImagePath);
     tempImagePath = File::generateTempSourceFile(sourceImagePath);
-
+    imageUtils = new ImageUtils(tempImagePath);
     if (!QFile::exists(tempImagePath)) {
         QMessageBox::critical(this, "错误！", "图片读取失败");
         return;
     }
     this->times = 1.00;
     showImage(tempImagePath);
-    imageUtils = new ImageUtils(tempImagePath);
+    imageOperationMenu->setEnabled(true);
+    ui->actionResetImage->setChecked(true);
 }
 
 void MainWindow::saveImage()
 {
-    File::saveImage(this, zoomImagePath);
+    File::saveImage(this, tempImagePath);
 }
 
 void MainWindow::getImageInfo() const
 {
-    if (this->sourceImagePath == nullptr) {
+    if (this->sourceImagePath.isEmpty()) {
         return;
     }
     ImageInfoDialog* dialog = new ImageInfoDialog(this->sourceImagePath);
     dialog->exec();
 }
 
+void MainWindow::reset(bool isChecked)
+{
+    if (isChecked) {
+        tempImagePath = File::generateTempSourceFile(sourceImagePath);
+        imageUtils = new ImageUtils(tempImagePath);
+        times = 1.0;
+        showImage(this->tempImagePath);
+    }
+}
+
+void MainWindow::cannyCheck(bool isChecked)
+{
+    if (isChecked) {
+        tempImagePath = imageUtils->cannyCheck(tempImagePath);
+        imageUtils = new ImageUtils(tempImagePath);
+        times = 1.0;
+        showImage(tempImagePath);
+    }
+}
+
+void MainWindow::grayImage(bool isChecked)
+{
+    if (isChecked) {
+        tempImagePath = imageUtils->generateGrayImage(tempImagePath);
+        imageUtils = new ImageUtils(tempImagePath);
+        times = 1.0;
+        showImage(tempImagePath);
+    }
+}
+
 void MainWindow::showAbout() const
 {
-    AboutDialog* a = new AboutDialog;
-    a->exec();
+    AboutDialog* dialog = new AboutDialog;
+    dialog->exec();
 }
 
 void MainWindow::showImage(const QString& imagePath)
 {
-    if (imagePath.isEmpty()) {
+    if (imagePath.isEmpty() || !QFile::exists(imagePath)) {
         return;
     }
     if (scene) {
         delete scene;
         scene = new QGraphicsScene;
     }
-    zoomImagePath = imagePath;
 
-    scene->addPixmap(QPixmap(zoomImagePath));
+    scene->addPixmap(QPixmap(imagePath));
     ui->screen->setScene(scene);
     ui->screen->show();
 
-    ui->statusbar->showMessage("放大倍数:" + QString::number(times));
+    updateStatusBar();
 }
 
 void MainWindow::showImage(const QImage& image)
@@ -112,8 +154,7 @@ void MainWindow::showImage(const QImage& image)
     scene->addPixmap(QPixmap::fromImage(image));
     ui->screen->setScene(scene);
     ui->screen->show();
-
-    ui->statusbar->showMessage("放大倍数:" + QString::number(times));
+    updateStatusBar();
 }
 
 void MainWindow::zoomIn()
@@ -138,11 +179,15 @@ void MainWindow::zoom()
         QMessageBox::information(this, "提示", "已经达到缩放极限");
         return;
     }
-    qDebug() << "zoom:" << times;
     QString tempPath = imageUtils->zoom(times);
     if (tempPath.startsWith("-")) {
         QMessageBox::information(this, "错误", "操作错误，错误码：" + tempPath);
         return;
     }
     this->showImage(tempPath);
+}
+
+void MainWindow::updateStatusBar() const
+{
+    ui->statusbar->showMessage("缩放倍数:" + QString::number(times));
 }

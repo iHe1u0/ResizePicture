@@ -64,6 +64,9 @@
     <property name="title">
      <string>图片处理</string>
     </property>
+    <addaction name="actionResetImage"/>
+    <addaction name="actionCanny"/>
+    <addaction name="actionGrayImage"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -138,6 +141,30 @@
   <action name="actionShowAbout">
    <property name="text">
     <string>版权</string>
+   </property>
+  </action>
+  <action name="actionCanny">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>canny边缘检测</string>
+   </property>
+  </action>
+  <action name="actionGrayImage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>灰度图</string>
+   </property>
+  </action>
+  <action name="actionResetImage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示原图</string>
    </property>
   </action>
  </widget>
