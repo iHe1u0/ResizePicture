@@ -67,6 +67,7 @@
     <addaction name="actionResetImage"/>
     <addaction name="actionCanny"/>
     <addaction name="actionGrayImage"/>
+    <addaction name="actionDetectFace"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -165,6 +166,17 @@
    </property>
    <property name="text">
     <string>显示原图</string>
+   </property>
+  </action>
+  <action name="actionDetectFace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>人脸检测</string>
+   </property>
+   <property name="toolTip">
+    <string>人脸检测</string>
    </property>
   </action>
  </widget>

@@ -63,6 +63,14 @@ public:
      */
     QString generateGrayImage(const QString& imagePath) const;
 
+    /**
+     * @brief detectFace 人脸检测
+     * @param sourceImageFilePath 要检测的图片路径
+     * @param faceDetectionImagePath 检测后生成的图片
+     * @return true表示检测到了人脸,false代表检测失败
+     */
+    bool detectFace(const QString& sourceImageFilePath, QString& faceDetectionImagePath);
+
 private:
     QFileInfo* fileInfo;
     QString tempFileName;

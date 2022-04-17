@@ -7,7 +7,9 @@
 #include <QObject>
 #include <QTextCodec>
 #include <exception>
-#include <opencv2/imgproc/imgproc.hpp>
+#include <iostream>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
@@ -124,4 +126,23 @@ QString ImageUtils::generateGrayImage(const QString& imagePath) const
     cvtColor(image, grayImage, cv::COLOR_RGBA2GRAY);
     cv::imwrite(tempImagePath.toStdString(), grayImage);
     return tempImagePath;
+}
+
+bool ImageUtils::detectFace(const QString& sourceImageFilePath, QString& faceDetectionImagePath)
+{
+    cv::Mat image, faceImage;
+    image = cv::imread(sourceImageFilePath.toStdString());
+    cv::cvtColor(image, faceImage, cv::COLOR_BGR2GRAY);
+    cv::equalizeHist(faceImage, faceImage);
+    cv::CascadeClassifier faceCascade;
+    if (!faceCascade.load(File::getModelFilePath("haarcascade_frontalface_alt.xml").toStdString())) {
+        return false;
+    }
+    std::vector<cv::Rect> faceRect;
+    faceCascade.detectMultiScale(faceImage, faceRect, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
+    for (size_t i = 0; i < faceRect.size(); i++) {
+        cv::rectangle(image, faceRect[i], cv::Scalar(0, 0, 255));
+    }
+    cv::imwrite(faceDetectionImagePath.toStdString(), image);
+    return true;
 }

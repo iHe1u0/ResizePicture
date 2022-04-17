@@ -1,5 +1,6 @@
 #include "file.h"
 #include "error.h"
+#include <QApplication>
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -61,4 +62,17 @@ void File::saveImage(QWidget* obj, const QString& imagePath)
     QString savePath = QFileDialog::getSaveFileName(obj, "保存", fileInfo->absoluteFilePath(), "*." + QImageReader::imageFormat(imagePath));
     copyFileToPath(imagePath, savePath, true);
     delete fileInfo;
+}
+
+QString File::getModelFilePath(const QString& modelFileName, const QString& modelType)
+{
+    if (modelFileName.isEmpty()) {
+        return QString::number(ERROR_FILE_NOT_FOUND);
+    }
+    QString modelPath = QApplication::applicationDirPath() + "/etc/" + modelType + "/" + modelFileName;
+    if (QFile::exists(modelPath)) {
+        return modelPath;
+    } else {
+        return QString::number(ERROR_FILE_NOT_FOUND);
+    }
 }

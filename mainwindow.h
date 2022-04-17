@@ -104,5 +104,11 @@ private slots:
      */
     void grayImage(bool isChecked);
 
+    /**
+     * @brief detectFace 人脸检测
+     * @param isChecked true表示开启人脸检测
+     */
+    void detectFace(bool isChecked);
+
     void showAbout() const;
 };

@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->actionResetImage, SIGNAL(triggered(bool)), this, SLOT(reset(bool)));
     connect(ui->actionCanny, SIGNAL(triggered(bool)), this, SLOT(cannyCheck(bool)));
     connect(ui->actionGrayImage, SIGNAL(triggered(bool)), this, SLOT(grayImage(bool)));
+    connect(ui->actionDetectFace, SIGNAL(triggered(bool)), this, SLOT(detectFace(bool)));
     connect(ui->actionShowAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
     ui->screen->setCacheMode(QGraphicsView::CacheNone);
     ui->screen->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -42,7 +43,7 @@ MainWindow::MainWindow(QWidget* parent)
     imageOperationMenu->addAction(ui->actionResetImage);
     imageOperationMenu->addAction(ui->actionCanny);
     imageOperationMenu->addAction(ui->actionGrayImage);
-
+    imageOperationMenu->addAction(ui->actionDetectFace);
     imageOperationMenu->setEnabled(false);
 }
 
@@ -119,6 +120,23 @@ void MainWindow::grayImage(bool isChecked)
         imageUtils = new ImageUtils(tempImagePath);
         times = 1.0;
         showImage(tempImagePath);
+    }
+}
+
+void MainWindow::detectFace(bool isChecked)
+{
+    if (isChecked) {
+        QString faceDetectionImagePath = File::generateTempSourceFile(sourceImagePath);
+        bool hasFace = imageUtils->detectFace(sourceImagePath, faceDetectionImagePath);
+        if (hasFace) {
+            tempImagePath = faceDetectionImagePath;
+            imageUtils = new ImageUtils(tempImagePath);
+            times = 1.0;
+            showImage(tempImagePath);
+        } else {
+            QMessageBox::critical(this, "提示", "未检测到人脸");
+            ui->actionResetImage->setChecked(true);
+        }
     }
 }
 
