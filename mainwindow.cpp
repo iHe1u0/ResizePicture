@@ -10,6 +10,7 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QIcon>
 #include <QImage>
 #include <QImageReader>
 #include <QMessageBox>
@@ -21,7 +22,8 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setWindowTitle("OpenCV图片缩放");
+    this->setWindowTitle("基于无损放大的彩印照片美化设计与实现");
+    this->setWindowIcon(QIcon(QApplication::applicationDirPath() + "/etc/images/ic_app.png"));
 
     connect(ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(openImage()));
     connect(ui->actionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));

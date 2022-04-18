@@ -62,6 +62,7 @@ DISTFILES += \
     etc/haarcascades/haarcascade_russian_plate_number.xml \
     etc/haarcascades/haarcascade_smile.xml \
     etc/haarcascades/haarcascade_upperbody.xml \
+    etc/icon/ic_zoom.ico \
     etc/lbpcascades/lbpcascade_frontalcatface.xml \
     etc/lbpcascades/lbpcascade_frontalface.xml \
     etc/lbpcascades/lbpcascade_frontalface_improved.xml \

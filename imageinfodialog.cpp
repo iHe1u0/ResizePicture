@@ -1,6 +1,8 @@
 #include "imageinfodialog.h"
 #include "ui_imageinfodialog.h"
 
+#include <QIcon>
+
 ImageInfoDialog::ImageInfoDialog(const QString& imagePath, QWidget* parent)
     : QDialog(parent)
     , ui(new Ui::ImageInfoDialog)
@@ -10,7 +12,8 @@ ImageInfoDialog::ImageInfoDialog(const QString& imagePath, QWidget* parent)
         this->close();
     }
     info = new QFileInfo(imagePath);
-    setWindowTitle("图片信息");
+    this->setWindowTitle("图片信息");
+    this->setWindowIcon(QIcon(QApplication::applicationDirPath() + "/etc/images/ic_app.png"));
     setWindowModality(Qt::ApplicationModal);
     setAttribute(Qt::WA_DeleteOnClose);
 

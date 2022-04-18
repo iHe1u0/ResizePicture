@@ -10,7 +10,8 @@ AboutDialog::AboutDialog(QWidget* parent)
     , ui(new Ui::AboutDialog)
 {
     ui->setupUi(this);
-    setWindowTitle("Licenses");
+    this->setWindowIcon(QIcon(QApplication::applicationDirPath() + "/etc/images/ic_app.png"));
+    this->setWindowTitle("使用到的开源库及其版权声明");
     setAttribute(Qt::WA_DeleteOnClose);
 
     fileModel = new QFileSystemModel;
