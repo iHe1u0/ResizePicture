@@ -10,5 +10,6 @@
 #define ERROR_OOM -103
 #define ERROR_WRONG_FILE_TYPE -104
 
-#define ERROR_ZOOM -200
-#define ERROR_ZERO_ZOOM -201
+#define ERROR_OPERATE -200
+#define ERROR_ZOOM -201
+#define ERROR_ZERO_ZOOM -202

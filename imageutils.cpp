@@ -105,7 +105,7 @@ QString ImageUtils::cannyCheck(const QString& imagePath) const
     if (imagePath.isEmpty()) {
         return QString::number(ERROR_FILE_NOT_FOUND);
     }
-    QString tempImagePath = File::getTempDir("canny").append(".").append(getImageType(imagePath));
+    QString tempImagePath = File::getTempDir().append(".").append(getImageType(imagePath));
     Mat image = imread(imagePath.toStdString());
     Mat cannyImage(image.size(), CV_8UC1, Scalar());
     Canny(image, cannyImage, 100, 100, 3, false);
@@ -118,10 +118,26 @@ QString ImageUtils::generateGrayImage(const QString& imagePath) const
     if (imagePath.isEmpty()) {
         return QString::number(ERROR_FILE_NOT_FOUND);
     }
-    QString tempImagePath = File::getTempDir("grayImage").append(".").append(getImageType(imagePath));
+    QString tempImagePath = File::getTempDir().append(".").append(getImageType(imagePath));
     Mat image = imread(imagePath.toStdString());
     Mat grayImage;
     cvtColor(image, grayImage, cv::COLOR_RGBA2GRAY);
     cv::imwrite(tempImagePath.toStdString(), grayImage);
     return tempImagePath;
+}
+
+QString ImageUtils::denoisingImage() const
+{
+    if (!this->fileInfo->exists()) {
+        return QString::number(ERROR_FILE_NOT_FOUND);
+    }
+    QString tempPath = File::getTempDir().append(".").append(getImageType(this->fileInfo->absoluteFilePath()));
+    Mat image = imread(this->fileInfo->absoluteFilePath().toStdString());
+    Mat deNoiseImage;
+    fastNlMeansDenoisingColored(image, deNoiseImage, 15, 15, 9, 27);
+    if (deNoiseImage.empty()) {
+        return QString::number(ERROR_IO);
+    }
+    imwrite(tempPath.toStdString(), deNoiseImage);
+    return tempPath;
 }

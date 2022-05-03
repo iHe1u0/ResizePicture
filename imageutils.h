@@ -44,13 +44,13 @@ public:
 
     /**
      * @brief cannyCheck 边缘检测 使用的函数：
-     *          void Canny(InputArray image,Output edges,double threshold1,double threshold2,int apertureSize= 3,bool L2gradient = false)
-     *          @第一个参数，InputArray类型的image，输入图像，即原图像，填Mat类型的对象即可，且需为单通道8位图像
-     *          @第二个参数，OutputArray类型的edges，输出的边缘图，需要和源图片有一样的尺寸和类型
-     *          @第三个参数，double类型的threshold1，第一个滞后性阈值
-     *          @第四个参数，double类型的threshold2，第二个滞后性阈值
-     *          @第五个参数，int类型的apertureSize，表示应用Sobel算子的孔径大小，其有默认值3
-     *          @第六个参数，bool类型的L2gradient，一个计算图像梯度幅值的标识，有默认值false
+     * @第一个参数，InputArray类型的image，输入图像，即原图像，填Mat类型的对象即可，且需为单通道8位图像
+     * @第二个参数，OutputArray类型的edges，输出的边缘图，需要和源图片有一样的尺寸和类型
+     * @第三个参数，double类型的threshold1，第一个滞后性阈值
+     * @第四个参数，double类型的threshold2，第二个滞后性阈值
+     * @第五个参数，int类型的apertureSize，表示应用Sobel算子的孔径大小，其有默认值3
+     * @第六个参数，bool类型的L2gradient，一个计算图像梯度幅值的标识，有默认值false
+     *
      * @param imagePath 原图路径
      * @return 缓存文件路径
      */
@@ -62,6 +62,21 @@ public:
      * @return 缓存文件路径
      */
     QString generateGrayImage(const QString& imagePath) const;
+
+    /**
+     * @brief denoisingImage 图像去噪 使用的函数：
+     * CV_EXPORTS_W void fastNlMeansDenoisingColored( InputArray src, OutputArray dst,
+     * float h = 3, float hColor = 3,int templateWindowSize = 7, int searchWindowSize = 21);
+     * @src 输入图像
+     * @dst 输出图像
+     * @h 决定过滤器强度。h 值高可以很好的去除噪声,但也会把图像的细节抹去。(取 10 的效果不错）
+     * @hColor 与h相同，使用于彩色图像
+     * @templateWindowSize 奇数。(推荐值为 7）
+     * @searchWindowSize 奇数。(推荐值为 21)
+     *
+     * @return 消除噪声后图片的缓存地址
+     */
+    QString denoisingImage() const;
 
 private:
     QFileInfo* fileInfo;

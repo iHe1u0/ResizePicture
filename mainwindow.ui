@@ -74,9 +74,16 @@
     </property>
     <addaction name="actionShowAbout"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>图片美化</string>
+    </property>
+    <addaction name="actionDenoising"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuZoom"/>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -96,6 +103,9 @@
    </property>
   </action>
   <action name="actionSave">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>保存</string>
    </property>
@@ -110,8 +120,14 @@
    <property name="text">
     <string>退出</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
   </action>
   <action name="actionZoomIn">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>放大</string>
    </property>
@@ -123,6 +139,9 @@
    </property>
   </action>
   <action name="actionZoomOut">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>缩小</string>
    </property>
@@ -134,18 +153,30 @@
    </property>
   </action>
   <action name="actionGetImageInfo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>图片信息</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
   <action name="actionShowAbout">
    <property name="text">
     <string>版权</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
   </action>
   <action name="actionCanny">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>canny边缘检测</string>
@@ -155,6 +186,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>灰度图</string>
    </property>
@@ -163,8 +197,19 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>显示原图</string>
+   </property>
+  </action>
+  <action name="actionDenoising">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>图像去噪</string>
    </property>
   </action>
  </widget>

@@ -104,5 +104,10 @@ private slots:
      */
     void grayImage(bool isChecked);
 
+    /**
+     * @brief denoising 图像去噪
+     */
+    void denoising();
+
     void showAbout() const;
 };

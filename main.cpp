@@ -5,8 +5,6 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     MainWindow w;
-    // 最大化显示
-    // w.showMaximized();
-    w.show();
+    w.showMaximized();
     return app.exec();
 }
