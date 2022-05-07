@@ -67,6 +67,7 @@
     <addaction name="actionResetImage"/>
     <addaction name="actionCanny"/>
     <addaction name="actionGrayImage"/>
+    <addaction name="actionCropImage"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -210,6 +211,14 @@
    </property>
    <property name="text">
     <string>图像去噪</string>
+   </property>
+  </action>
+  <action name="actionCropImage">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>图片裁剪</string>
    </property>
   </action>
  </widget>

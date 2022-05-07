@@ -14,6 +14,7 @@ QMAKE_CXXFLAGS += /MT
 
 SOURCES += \
     aboutdialog.cpp \
+    cropwindow.cpp \
     file.cpp \
     imageinfodialog.cpp \
     imageutils.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
 
 HEADERS += \
     aboutdialog.h \
+    cropwindow.h \
     error.h \
     file.h \
     imageinfodialog.h \
@@ -30,6 +32,7 @@ HEADERS += \
 
 FORMS += \
     aboutdialog.ui \
+    cropwindow.ui \
     imageinfodialog.ui \
     mainwindow.ui
 

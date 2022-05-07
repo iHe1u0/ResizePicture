@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "aboutdialog.h"
+#include "cropwindow.h"
 #include "error.h"
 #include "file.h"
 #include "imageinfodialog.h"
@@ -30,12 +31,10 @@ MainWindow::MainWindow(QWidget* parent)
     connect(ui->actionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
     connect(ui->actionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveImage()));
-    connect(ui->actionGetImageInfo, SIGNAL(triggered()), this, SLOT(getImageInfo()));
     connect(ui->actionResetImage, SIGNAL(triggered(bool)), this, SLOT(reset(bool)));
     connect(ui->actionCanny, SIGNAL(triggered(bool)), this, SLOT(cannyCheck(bool)));
     connect(ui->actionGrayImage, SIGNAL(triggered(bool)), this, SLOT(grayImage(bool)));
     connect(ui->actionDenoising, SIGNAL(triggered()), this, SLOT(denoising()));
-    connect(ui->actionShowAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
     ui->screen->setCacheMode(QGraphicsView::CacheNone);
     ui->screen->setDragMode(QGraphicsView::ScrollHandDrag);
 
@@ -62,7 +61,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::openImage()
 {
-    this->sourceImagePath = QFileDialog::getOpenFileName(this,
+    sourceImagePath = QFileDialog::getOpenFileName(this,
         "选择一张图片",
         QStandardPaths::writableLocation(QStandardPaths::PicturesLocation),
         "图片(*.png;*.jpeg;*.jpg;*.bmp;*.webp;*.tiff);;所有文件(*.*)");
@@ -88,20 +87,12 @@ void MainWindow::openImage()
     ui->actionCanny->setEnabled(true);
     ui->actionGrayImage->setEnabled(true);
     ui->actionDenoising->setEnabled(true);
+    ui->actionCropImage->setEnabled(true);
 }
 
 void MainWindow::saveImage()
 {
     File::saveImage(this, tempImagePath);
-}
-
-void MainWindow::getImageInfo() const
-{
-    if (this->sourceImagePath.isEmpty()) {
-        return;
-    }
-    ImageInfoDialog* dialog = new ImageInfoDialog(this->sourceImagePath);
-    dialog->exec();
 }
 
 void MainWindow::reset(bool isChecked)
@@ -110,7 +101,7 @@ void MainWindow::reset(bool isChecked)
         tempImagePath = File::generateTempSourceFile(sourceImagePath);
         imageUtils = new ImageUtils(tempImagePath);
         times = 1.0;
-        showImage(this->tempImagePath);
+        showImage(tempImagePath);
     }
 }
 
@@ -146,12 +137,6 @@ void MainWindow::denoising()
     showImage(tempImagePath);
 }
 
-void MainWindow::showAbout() const
-{
-    AboutDialog* dialog = new AboutDialog;
-    dialog->exec();
-}
-
 void MainWindow::zoomIn()
 {
     times += 0.2;
@@ -166,7 +151,7 @@ void MainWindow::zoomOut()
 
 void MainWindow::zoom()
 {
-    if (this->tempImagePath.isEmpty()) {
+    if (tempImagePath.isEmpty()) {
         ui->statusbar->showMessage("操作错误，图片不存在");
         return;
     }
@@ -213,4 +198,26 @@ void MainWindow::showImage(const QImage& image)
 void MainWindow::updateStatusBar() const
 {
     ui->statusbar->showMessage("缩放倍数:" + QString::number(times));
+}
+
+void MainWindow::on_actionCropImage_triggered()
+{
+    CropWindow* cropWindow = new CropWindow;
+    cropWindow->setSourcePath(tempImagePath);
+    cropWindow->show();
+}
+
+void MainWindow::on_actionShowAbout_triggered()
+{
+    AboutDialog* dialog = new AboutDialog;
+    dialog->exec();
+}
+
+void MainWindow::on_actionGetImageInfo_triggered()
+{
+    if (sourceImagePath.isEmpty()) {
+        return;
+    }
+    ImageInfoDialog* dialog = new ImageInfoDialog(sourceImagePath);
+    dialog->exec();
 }

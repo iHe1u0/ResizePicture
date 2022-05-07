@@ -19,11 +19,11 @@ public:
 private:
     Ui::MainWindow* ui;
 
-    // 缩放类
-    ImageUtils* imageUtils = nullptr;
-
     // 原图路径
     QString sourceImagePath;
+
+    // 缩放类
+    ImageUtils* imageUtils = nullptr;
 
     // 临时缓存图片路径
     QString tempImagePath;
@@ -83,11 +83,6 @@ private slots:
     void saveImage();
 
     /**
-     * @brief getImageInfo 显示图片信息
-     */
-    void getImageInfo() const;
-
-    /**
      * @brief reset 重置为原图
      */
     void reset(bool isChecked);
@@ -109,5 +104,18 @@ private slots:
      */
     void denoising();
 
-    void showAbout() const;
+    /**
+     * @brief 图片裁剪
+     */
+    void on_actionCropImage_triggered();
+
+    /**
+     * @brief 图片信息
+     */
+    void on_actionGetImageInfo_triggered();
+
+    /**
+     * @brief 关于版权信息
+     */
+    void on_actionShowAbout_triggered();
 };
