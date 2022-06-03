@@ -5,12 +5,20 @@ greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
 CONFIG += c++17 file_copies
 
-resources.files = $$PWD/etc
-resources.path = $$OUT_PWD/release/
+CONFIG(debug, debug|release) {
+    resources.files = $$PWD/etc
+	resources.path = $$OUT_PWD/debug/
+	opencv.files = $$PWD/etc/dll/opencv_world500d.dll
+	opencv.path = $$OUT_PWD/debug/
+} else {
+    resources.files = $$PWD/etc
+	resources.path = $$OUT_PWD/release/
+	opencv.files = $$PWD/etc/dll/opencv_world500.dll
+	opencv.path = $$OUT_PWD/release/
+}
+COPIES += resources opencv
 
-COPIES += resources
-
-QMAKE_CXXFLAGS += /MT
+# QMAKE_CXXFLAGS += /MT
 
 SOURCES += \
     aboutdialog.cpp \
@@ -36,8 +44,11 @@ FORMS += \
     imageinfodialog.ui \
     mainwindow.ui
 
-LIBS += -L$$PWD/libs/ -lopencv_img_hash455
-LIBS += -L$$PWD/libs/ -lopencv_world455
+CONFIG(debug, debug|release) {
+    LIBS += -L$$PWD/libs/ -lopencvd
+} else {
+    LIBS += -L$$PWD/libs/ -lopencv
+}
 
 INCLUDEPATH += $$PWD/include
 DEPENDPATH += $$PWD/include
@@ -48,6 +59,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    etc/dll/opencv_world500.dll \
+    etc/dll/opencv_world500d.dll \
     etc/haarcascades/haarcascade_eye.xml \
     etc/haarcascades/haarcascade_eye_tree_eyeglasses.xml \
     etc/haarcascades/haarcascade_frontalcatface.xml \

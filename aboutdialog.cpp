@@ -6,32 +6,37 @@
 #include <QUrl>
 
 AboutDialog::AboutDialog(QWidget* parent)
-    : QDialog(parent)
-    , ui(new Ui::AboutDialog)
+  : QDialog(parent)
+  , ui(new Ui::AboutDialog)
 {
-    ui->setupUi(this);
-    this->setWindowIcon(QIcon(QApplication::applicationDirPath() + "/etc/images/ic_app.png"));
-    this->setWindowTitle("使用到的开源库及其版权声明");
-    setAttribute(Qt::WA_DeleteOnClose);
+  ui->setupUi(this);
+  this->setWindowIcon(
+    QIcon(QApplication::applicationDirPath() + "/etc/images/ic_app.png"));
+  this->setWindowTitle("使用到的开源库及其版权说明");
+  setAttribute(Qt::WA_DeleteOnClose);
 
-    fileModel = new QFileSystemModel;
-    fileModel->setRootPath(licenseFilePath);
+  fileModel = new QFileSystemModel;
+  fileModel->setRootPath(licenseFilePath);
 
-    ui->licenseListView->setModel(fileModel);
-    ui->licenseListView->setRootIndex(fileModel->index(licenseFilePath));
-    ui->licenseListView->show();
+  ui->licenseListView->setModel(fileModel);
+  ui->licenseListView->setRootIndex(fileModel->index(licenseFilePath));
+  ui->licenseListView->show();
 
-    connect(ui->licenseListView, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
+  connect(ui->licenseListView,
+          SIGNAL(clicked(QModelIndex)),
+          this,
+          SLOT(itemClicked(QModelIndex)));
 }
 
 AboutDialog::~AboutDialog()
 {
-    delete fileModel;
-    delete ui;
+  delete fileModel;
+  delete ui;
 }
 
-void AboutDialog::itemClicked(QModelIndex index)
+void
+AboutDialog::itemClicked(QModelIndex index)
 {
-    QString path = licenseFilePath + "/" + index.data().toByteArray();
-    QDesktopServices::openUrl(QUrl("file:///" + path));
+  QString path = licenseFilePath + "/" + index.data().toByteArray();
+  QDesktopServices::openUrl(QUrl("file:///" + path));
 }
