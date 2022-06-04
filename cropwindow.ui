@@ -6,25 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>900</width>
+    <height>660</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>图片裁剪</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="view">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>50</y>
-      <width>291</width>
-      <height>271</height>
+      <x>0</x>
+      <y>0</y>
+      <width>900</width>
+      <height>660</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>Load Error</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
    </widget>
   </widget>
@@ -33,8 +36,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>18</height>
+     <width>900</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
