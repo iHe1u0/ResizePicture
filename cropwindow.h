@@ -1,11 +1,11 @@
 #pragma once
 
-#include <imageutils.h>
-
 #include <QCloseEvent>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QPainter>
+
+#include "imageutils.h"
 
 namespace Ui {
 class CropWindow;

@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
   MainWindow w;
-  w.showMaximized();
+  w.show();
   //  CropWindow w;
   //  w.setSourcePath("E:/User/Pictures/head_nn.jpg");
   //  w.show();

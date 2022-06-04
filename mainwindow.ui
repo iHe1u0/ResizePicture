@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>667</width>
-    <height>480</height>
+    <width>656</width>
+    <height>493</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -21,6 +21,33 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="brightnessLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
+      <item alignment="Qt::AlignVCenter">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>亮度：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="brightnessSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>50</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
     <item row="0" column="0">
      <widget class="QGraphicsView" name="screen">
       <property name="minimumSize">
@@ -38,7 +65,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>667</width>
+     <width>656</width>
      <height>25</height>
     </rect>
    </property>
